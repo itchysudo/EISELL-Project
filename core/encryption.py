@@ -1,5 +1,5 @@
 import string
-
+# test message
 def vigenere_encrypt(plaintext, key):
     encrypted_message = ""
     key_index = 0
