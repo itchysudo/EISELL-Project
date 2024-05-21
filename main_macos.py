@@ -1,10 +1,12 @@
 import tkinter as tk
-from platform_specific.macos import EncryptionGUI
+from core.encryption_gui import EncryptionGUI
+from platform_specific.macos import platform_specific_setup
 
 def main():
     root = tk.Tk()
     root.geometry("500x150")
-    app = EncryptionGUI(root)
+    footer_text = platform_specific_setup()
+    app = EncryptionGUI(root, footer_text)
     root.mainloop()
 
 if __name__ == "__main__":
