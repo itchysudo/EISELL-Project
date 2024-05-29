@@ -1,6 +1,5 @@
-def platform_specific_setup():
-    print("Running macOS specific setup")
-    footer_text = "Created by ItchySudo. macOS v1.2.1"
-    return footer_text
+from core.encryption_gui import EncryptionGUI
 
-# You can add more macOS-specific functions or classes here if needed
+def platform_specific_setup(root, footer_text):
+    # Perform any macOS-specific setup here if needed
+    return EncryptionGUI(root, footer_text)
