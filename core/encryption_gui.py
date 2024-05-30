@@ -8,13 +8,15 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import os
 import secrets
+import hashlib
 
-class PythiaGUI:
+
+class EISELLGUI:
     def __init__(self, master, footer_text):
         try:
             self.master = master
             self.footer_text = footer_text  # Store footer_text as an instance variable
-            master.title("PYTHIA - Python Encryption Application")
+            master.title("EISELL - Python Encryption Application")
             master.geometry("600x400")  # Increase default size
 
             # Initialize mode
@@ -27,8 +29,10 @@ class PythiaGUI:
 
             # Define light and dark color schemes
             self.colors = {
-                "light": {"bg": "white", "fg": "black", "button_bg": "#eeeeee", "button_fg": "black", "entry_bg": "white", "entry_fg": "black", "border_color": "#cccccc"},
-                "dark": {"bg": "#333333", "fg": "white", "button_bg": "#555555", "button_fg": "white", "entry_bg": "black", "entry_fg": "white", "border_color": "#333333"}
+                "light": {"bg": "white", "fg": "black", "button_bg": "#eeeeee", "button_fg": "black",
+                          "entry_bg": "white", "entry_fg": "black", "border_color": "#cccccc"},
+                "dark": {"bg": "#333333", "fg": "white", "button_bg": "#555555", "button_fg": "white",
+                         "entry_bg": "black", "entry_fg": "white", "border_color": "#333333"}
             }
 
             # Configure the style for buttons
@@ -40,9 +44,9 @@ class PythiaGUI:
 
             # Apply the initial color scheme
             self.apply_color_scheme()
-            print("PythiaGUI initialized successfully.")
+            print("EISELLGUI initialized successfully.")
         except Exception as e:
-            print(f"An error occurred in PythiaGUI initialization: {e}")
+            print(f"An error occurred in EISELLGUI initialization: {e}")
 
     def create_layout(self):
         try:
@@ -63,31 +67,40 @@ class PythiaGUI:
             menubar.add_command(label="Toggle Mode", command=self.toggle_mode)
 
             # Display the title text
-            self.label = tk.Label(self.master, text="Welcome to PYTHIA.", font=self.title_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"])
+            self.label = tk.Label(self.master, text="Welcome to EISELL.", font=self.title_font,
+                                  bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"])
             self.label.grid(row=0, column=0, columnspan=3, pady=10)
 
             # Create a frame to contain the main buttons
             self.button_frame = tk.Frame(self.master, bg=self.colors[self.mode]["bg"])
             self.button_frame.grid(row=1, column=0, padx=10, pady=10, sticky='n')
 
-            # Create main buttons for text encrypt, file encrypt, key generator, snake game, and quit
-            self.text_encrypt_button = ttk.Button(self.button_frame, text="Text Encryption", command=self.open_text_encryption_window)
+            # Create main buttons for text encrypt, file encrypt, key generator, snake game, load image, and quit
+            self.text_encrypt_button = ttk.Button(self.button_frame, text="Text Encryption",
+                                                  command=self.open_text_encryption_window)
             self.text_encrypt_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
-            self.file_encrypt_button = ttk.Button(self.button_frame, text="File Encryption", command=self.open_file_encryption_window)
+            self.file_encrypt_button = ttk.Button(self.button_frame, text="File Encryption",
+                                                  command=self.open_file_encryption_window)
             self.file_encrypt_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
-            self.key_gen_button = ttk.Button(self.button_frame, text="Key Generator", command=self.open_key_generator_window)
+            self.key_gen_button = ttk.Button(self.button_frame, text="Key Generator",
+                                             command=self.open_key_generator_window)
             self.key_gen_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
             self.snake_game_button = ttk.Button(self.button_frame, text="Play Snake", command=start_snake_game)
             self.snake_game_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
+            self.load_image_button = ttk.Button(self.button_frame, text="Load Image", command=self.load_image)
+            self.load_image_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
+
             self.quit_button = ttk.Button(self.button_frame, text="Quit", command=self.master.quit)
             self.quit_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
             # Footer Label
-            self.footer_label = tk.Label(self.master, text=self.footer_text, font=self.footer_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"], anchor='center')
+            self.footer_label = tk.Label(self.master, text=self.footer_text, font=self.footer_font,
+                                         bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"],
+                                         anchor='center')
             self.footer_label.grid(row=2, column=0, columnspan=3, pady=10, sticky='ew')
 
             # Configure column weights
@@ -119,10 +132,12 @@ class PythiaGUI:
                 widget.config(bg=colors["entry_bg"], fg=colors["entry_fg"], insertbackground=colors["entry_fg"])
             if isinstance(widget, ttk.Button):
                 widget.config(style='TButton')
-                self.style.configure('TButton', background=colors["button_bg"], foreground=colors["button_fg"], bordercolor=colors["border_color"])
+                self.style.configure('TButton', background=colors["button_bg"], foreground=colors["button_fg"],
+                                     bordercolor=colors["border_color"])
                 self.style.map('TButton',
                                foreground=[('pressed', colors["button_fg"]), ('active', colors["button_fg"])],
-                               background=[('pressed', '!disabled', colors["button_bg"]), ('active', colors["button_bg"])])
+                               background=[('pressed', '!disabled', colors["button_bg"]),
+                                           ('active', colors["button_bg"])])
 
     def apply_color_scheme_window(self, window):
         colors = self.colors[self.mode]
@@ -136,10 +151,12 @@ class PythiaGUI:
                 widget.config(bg=colors["entry_bg"], fg=colors["entry_fg"], insertbackground=colors["entry_fg"])
             if isinstance(widget, ttk.Button):
                 widget.config(style='TButton')
-                self.style.configure('TButton', background=colors["button_bg"], foreground=colors["button_fg"], bordercolor=colors["border_color"])
+                self.style.configure('TButton', background=colors["button_bg"], foreground=colors["button_fg"],
+                                     bordercolor=colors["border_color"])
                 self.style.map('TButton',
                                foreground=[('pressed', colors["button_fg"]), ('active', colors["button_fg"])],
-                               background=[('pressed', '!disabled', colors["button_bg"]), ('active', colors["button_bg"])])
+                               background=[('pressed', '!disabled', colors["button_bg"]),
+                                           ('active', colors["button_bg"])])
 
     def open_text_encryption_window(self):
         print("Text Encryption window opened.")
@@ -148,18 +165,24 @@ class PythiaGUI:
         text_window.geometry("400x400")
         self.apply_color_scheme_window(text_window)
 
-        tk.Label(text_window, text="Enter text to encrypt/decrypt:", font=self.custom_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"]).pack(pady=10)
-        text_entry = tk.Text(text_window, height=5, font=self.custom_font, bg=self.colors[self.mode]["entry_bg"], fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
+        tk.Label(text_window, text="Enter text to encrypt/decrypt:", font=self.custom_font,
+                 bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"]).pack(pady=10)
+        text_entry = tk.Text(text_window, height=5, font=self.custom_font, bg=self.colors[self.mode]["entry_bg"],
+                             fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
         text_entry.pack(pady=10)
 
-        tk.Label(text_window, text="Enter encryption key:", font=self.custom_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"]).pack(pady=10)
-        key_entry = tk.Entry(text_window, font=self.custom_font, bg=self.colors[self.mode]["entry_bg"], fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
+        tk.Label(text_window, text="Enter encryption key:", font=self.custom_font, bg=self.colors[self.mode]["bg"],
+                 fg=self.colors[self.mode]["fg"]).pack(pady=10)
+        key_entry = tk.Entry(text_window, font=self.custom_font, bg=self.colors[self.mode]["entry_bg"],
+                             fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
         key_entry.pack(pady=10)
 
-        result_label = tk.Label(text_window, text="", font=self.custom_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"])
+        result_label = tk.Label(text_window, text="", font=self.custom_font, bg=self.colors[self.mode]["bg"],
+                                fg=self.colors[self.mode]["fg"])
         result_label.pack(pady=10)
 
-        copy_button = tk.Button(text_window, text="Copy", bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"])
+        copy_button = tk.Button(text_window, text="Copy", bg=self.colors[self.mode]["button_bg"],
+                                fg=self.colors[self.mode]["button_fg"])
         copy_button.pack(pady=10)
         copy_button.pack_forget()  # Initially hide the copy button
 
@@ -184,8 +207,10 @@ class PythiaGUI:
             copy_button.config(command=lambda: copy_to_clipboard(decrypted_text))
             copy_button.pack()  # Show the copy button
 
-        tk.Button(text_window, text="Encrypt", command=encrypt_text, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(side=tk.LEFT, padx=10, pady=10)
-        tk.Button(text_window, text="Decrypt", command=decrypt_text, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(side=tk.RIGHT, padx=10, pady=10)
+        tk.Button(text_window, text="Encrypt", command=encrypt_text, bg=self.colors[self.mode]["button_bg"],
+                  fg=self.colors[self.mode]["button_fg"]).pack(side=tk.LEFT, padx=10, pady=10)
+        tk.Button(text_window, text="Decrypt", command=decrypt_text, bg=self.colors[self.mode]["button_bg"],
+                  fg=self.colors[self.mode]["button_fg"]).pack(side=tk.RIGHT, padx=10, pady=10)
 
     def open_file_encryption_window(self):
         print("File Encryption window opened.")
@@ -200,11 +225,15 @@ class PythiaGUI:
             key_window.geometry("400x200")
             self.apply_color_scheme_window(key_window)
 
-            tk.Label(key_window, text="Enter encryption key (leave blank to generate):", font=self.custom_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"]).pack(pady=10)
-            key_entry = tk.Entry(key_window, font=self.custom_font, bg=self.colors[self.mode]["entry_bg"], fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
+            tk.Label(key_window, text="Enter encryption key (leave blank to generate):", font=self.custom_font,
+                     bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"]).pack(pady=10)
+            key_entry = tk.Entry(key_window, font=self.custom_font, bg=self.colors[self.mode]["entry_bg"],
+                                 fg=self.colors[self.mode]["entry_fg"],
+                                 insertbackground=self.colors[self.mode]["entry_fg"])
             key_entry.pack(pady=10)
 
-            copy_button = tk.Button(key_window, text="Copy Key", bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"])
+            copy_button = tk.Button(key_window, text="Copy Key", bg=self.colors[self.mode]["button_bg"],
+                                    fg=self.colors[self.mode]["button_fg"])
             copy_button.pack(pady=10)
             copy_button.pack_forget()  # Initially hide the copy button
 
@@ -219,7 +248,7 @@ class PythiaGUI:
                     key = secrets.token_bytes(32)
                     key_entry.insert(0, key.hex())
                 else:
-                    key = key.ljust(32)[:32].encode('utf-8')  # Pad or truncate the key to ensure it is 32 bytes long
+                    key = hashlib.sha256(key.encode()).digest()  # Hash the key to ensure it is 32 bytes long
                 copy_button.config(command=lambda: copy_to_clipboard(key.hex()))
                 copy_button.pack()  # Show the copy button
                 return key
@@ -229,30 +258,42 @@ class PythiaGUI:
                 if key is None:
                     return
                 iv = os.urandom(16)  # Generating a random IV for encryption
-                encrypt_file_with_key_iv(input_file, output_file, key, iv)
-                messagebox.showinfo("File Encrypted", f"File encrypted successfully.\nKey: {key.hex()}")
-                key_window.destroy()
+
+                # Define the callback function to show the success message
+                def encryption_success_callback():
+                    encrypt_file_with_key_iv(input_file, output_file, key, iv)
+                    messagebox.showinfo("File Encrypted",
+                                        "File encrypted successfully. Please make sure to keep a copy of the key or the encrypted document will be inaccessible.")
+
+                self.show_loading_bar(file_window, encryption_success_callback)  # Show loading bar during encryption
 
             def start_decryption():
                 key = key_entry.get().strip()
                 if not key:
                     messagebox.showerror("Error", "Please enter the encryption key used to encrypt the file.")
                     return
-                key = key.ljust(32)[:32].encode('utf-8')  # Pad or truncate the key to ensure it is 32 bytes long
-                decrypt_file_with_key_iv(input_file, output_file, key)
-                messagebox.showinfo("File Decrypted", "File decrypted successfully.")
-                key_window.destroy()
+                key = hashlib.sha256(key.encode()).digest()  # Hash the key to ensure it is 32 bytes long
+
+                # Define the callback function to show the success message
+                def decryption_success_callback():
+                    decrypt_file_with_key_iv(input_file, output_file, key)
+                    messagebox.showinfo("File Decrypted", "File decrypted successfully.")
+
+                self.show_loading_bar(file_window, decryption_success_callback)  # Show loading bar during decryption
 
             if encrypt:
-                tk.Button(key_window, text="Encrypt", command=start_encryption, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(pady=10)
+                tk.Button(key_window, text="Encrypt", command=start_encryption, bg=self.colors[self.mode]["button_bg"],
+                          fg=self.colors[self.mode]["button_fg"]).pack(pady=10)
             else:
-                tk.Button(key_window, text="Decrypt", command=start_decryption, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(pady=10)
+                tk.Button(key_window, text="Decrypt", command=start_decryption, bg=self.colors[self.mode]["button_bg"],
+                          fg=self.colors[self.mode]["button_fg"]).pack(pady=10)
 
         def encrypt_file():
             input_file = filedialog.askopenfilename(title="Select File to Encrypt")
             if not input_file:
                 return
-            output_file = filedialog.asksaveasfilename(title="Choose a location to save the encrypted file", defaultextension=".enc", initialfile="Encrypted_File")
+            output_file = filedialog.asksaveasfilename(title="Choose a location to save the encrypted file",
+                                                       defaultextension=".enc", initialfile="Encrypted_File")
             if not output_file:
                 return
             open_key_window(encrypt=True, input_file=input_file, output_file=output_file)
@@ -261,7 +302,8 @@ class PythiaGUI:
             input_file = filedialog.askopenfilename(title="Select File to Decrypt")
             if not input_file:
                 return
-            output_file = filedialog.asksaveasfilename(title="Choose a location to save the decrypted file", defaultextension=".dec", initialfile="Decrypted_File")
+            output_file = filedialog.asksaveasfilename(title="Choose a location to save the decrypted file",
+                                                       defaultextension=".dec", initialfile="Decrypted_File")
             if not output_file:
                 return
             open_key_window(encrypt=False, input_file=input_file, output_file=output_file)
@@ -304,8 +346,29 @@ class PythiaGUI:
             with open(output_filename_with_extension, 'wb') as f:
                 f.write(plaintext)
 
-        tk.Button(file_window, text="Encrypt File", command=encrypt_file, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
-        tk.Button(file_window, text="Decrypt File", command=decrypt_file, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
+        tk.Button(file_window, text="Encrypt File", command=encrypt_file, bg=self.colors[self.mode]["button_bg"],
+                  fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
+        tk.Button(file_window, text="Decrypt File", command=decrypt_file, bg=self.colors[self.mode]["button_bg"],
+                  fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
+
+    def show_loading_bar(self, window, callback):
+        loading_window = tk.Toplevel(window)
+        loading_window.title("Processing")
+        loading_window.geometry("300x100")
+        self.apply_color_scheme_window(loading_window)
+
+        progress = ttk.Progressbar(loading_window, orient="horizontal", length=200, mode="determinate", maximum=100)
+        progress.pack(pady=20)
+
+        def update_progress(value):
+            if value > 100:
+                loading_window.destroy()
+                callback()  # Execute the callback function after closing the loading window
+            else:
+                progress['value'] = value
+                loading_window.after(50, update_progress, value + 2)  # Increase value slowly
+
+        update_progress(0)
 
     def open_key_generator_window(self):
         print("Key Generator window opened.")
@@ -314,11 +377,14 @@ class PythiaGUI:
         key_window.geometry("400x250")
         self.apply_color_scheme_window(key_window)
 
-        tk.Label(key_window, text="Generated Key:", font=self.custom_font, bg=self.colors[self.mode]["bg"], fg=self.colors[self.mode]["fg"]).pack(pady=10)
-        key_entry = tk.Entry(key_window, font=self.custom_font, width=50, bg=self.colors[self.mode]["entry_bg"], fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
+        tk.Label(key_window, text="Generated Key:", font=self.custom_font, bg=self.colors[self.mode]["bg"],
+                 fg=self.colors[self.mode]["fg"]).pack(pady=10)
+        key_entry = tk.Entry(key_window, font=self.custom_font, width=50, bg=self.colors[self.mode]["entry_bg"],
+                             fg=self.colors[self.mode]["entry_fg"], insertbackground=self.colors[self.mode]["entry_fg"])
         key_entry.pack(pady=10)
 
-        copy_button = tk.Button(key_window, text="Copy", bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"])
+        copy_button = tk.Button(key_window, text="Copy", bg=self.colors[self.mode]["button_bg"],
+                                fg=self.colors[self.mode]["button_fg"])
         copy_button.pack(pady=10)
         copy_button.pack_forget()  # Initially hide the copy button
 
@@ -335,20 +401,35 @@ class PythiaGUI:
             copy_button.config(command=lambda: copy_to_clipboard(key_hex))
             copy_button.pack()  # Show the copy button
 
-        tk.Button(key_window, text="Generate Key", command=generate_key, bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(pady=10)
+        tk.Button(key_window, text="Generate Key", command=generate_key, bg=self.colors[self.mode]["button_bg"],
+                  fg=self.colors[self.mode]["button_fg"]).pack(pady=10)
+
+    def load_image(self):
+        image_path = filedialog.askopenfilename(title="Select an image")
+        if image_path:
+            img = Image.open(image_path)
+            img = img.resize((100, 100))  # Resize image as needed
+            img_tk = ImageTk.PhotoImage(img)
+
+            # Create a label to display the image
+            label = tk.Label(self.master, image=img_tk)
+            label.image = img_tk  # Keep a reference to avoid garbage collection
+            label.pack()
 
     def show_help(self):
         print("Help menu selected.")
-        messagebox.showinfo("Help", "This is the help information for PYTHIA.")
+        messagebox.showinfo("Help", "This is the help information for EISELL.")
+
 
 # Example usage
 def main():
     from platform_specific.windows import platform_specific_setup
     root = tk.Tk()
     root.geometry("600x400")  # Increase default size
-    app = PythiaGUI(root, footer_text="Created by ItchySudo. Windows v2.1.1")
+    app = EISELLGUI(root, footer_text="Created by ItchySudo. Windows v2.1.1")
     platform_specific_setup(app)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
