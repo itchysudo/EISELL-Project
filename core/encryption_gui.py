@@ -75,24 +75,16 @@ class EISELLGUI:
             self.button_frame = tk.Frame(self.master, bg=self.colors[self.mode]["bg"])
             self.button_frame.grid(row=1, column=0, padx=10, pady=10, sticky='n')
 
-            # Create main buttons for text encrypt, file encrypt, key generator, snake game, load image, and quit
-            self.text_encrypt_button = ttk.Button(self.button_frame, text="Text Encryption",
-                                                  command=self.open_text_encryption_window)
-            self.text_encrypt_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
+            # Create main buttons for Encryption, Generators, and Take a Break
+            self.encryption_button = ttk.Button(self.button_frame, text="Encryption", command=self.open_encryption_menu)
+            self.encryption_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
-            self.file_encrypt_button = ttk.Button(self.button_frame, text="File Encryption",
-                                                  command=self.open_file_encryption_window)
-            self.file_encrypt_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
+            self.generators_button = ttk.Button(self.button_frame, text="Generators", command=self.open_generators_menu)
+            self.generators_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
-            self.key_gen_button = ttk.Button(self.button_frame, text="Key Generator",
-                                             command=self.open_key_generator_window)
-            self.key_gen_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
-
-            self.snake_game_button = ttk.Button(self.button_frame, text="Play Snake", command=start_snake_game)
-            self.snake_game_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
-
-            self.load_image_button = ttk.Button(self.button_frame, text="Load Image", command=self.load_image)
-            self.load_image_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
+            self.take_a_break_button = ttk.Button(self.button_frame, text="Take a Break",
+                                                  command=self.open_take_a_break_menu)
+            self.take_a_break_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
 
             self.quit_button = ttk.Button(self.button_frame, text="Quit", command=self.master.quit)
             self.quit_button.pack(fill=tk.X, pady=5)  # Added padding between buttons
@@ -157,6 +149,38 @@ class EISELLGUI:
                                foreground=[('pressed', colors["button_fg"]), ('active', colors["button_fg"])],
                                background=[('pressed', '!disabled', colors["button_bg"]),
                                            ('active', colors["button_bg"])])
+
+    def open_encryption_menu(self):
+        print("Encryption menu opened.")
+        encryption_window = tk.Toplevel(self.master)
+        encryption_window.title("Encryption")
+        encryption_window.geometry("400x300")
+        self.apply_color_scheme_window(encryption_window)
+
+        tk.Button(encryption_window, text="Text Encryption", command=self.open_text_encryption_window,
+                  bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
+        tk.Button(encryption_window, text="File Encryption", command=self.open_file_encryption_window,
+                  bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
+
+    def open_generators_menu(self):
+        print("Generators menu opened.")
+        generators_window = tk.Toplevel(self.master)
+        generators_window.title("Generators")
+        generators_window.geometry("400x300")
+        self.apply_color_scheme_window(generators_window)
+
+        tk.Button(generators_window, text="Key Generator", command=self.open_key_generator_window,
+                  bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
+
+    def open_take_a_break_menu(self):
+        print("Take a Break menu opened.")
+        take_a_break_window = tk.Toplevel(self.master)
+        take_a_break_window.title("Take a Break")
+        take_a_break_window.geometry("400x300")
+        self.apply_color_scheme_window(take_a_break_window)
+
+        tk.Button(take_a_break_window, text="Play Snake", command=start_snake_game,
+                  bg=self.colors[self.mode]["button_bg"], fg=self.colors[self.mode]["button_fg"]).pack(padx=10, pady=10)
 
     def open_text_encryption_window(self):
         print("Text Encryption window opened.")
